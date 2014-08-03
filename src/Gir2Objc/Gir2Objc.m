@@ -87,4 +87,17 @@
 	return nil;
 }
 
+-(GIRApi *)firstApiFromGirFile:(NSString *) girFile withError:(NSError **) parseError
+{
+	NSDictionary *girDict = nil;
+	*parseError = nil;
+	
+	if(![self parseGirFromFile: girFile intoDictionary: &girDict withError: parseError])
+	{
+		return nil;
+	}
+	
+	return [self firstApiFromDictionary: girDict];
+}
+
 @end

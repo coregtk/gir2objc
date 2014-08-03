@@ -37,7 +37,9 @@
 #import "Gir2Objc/Gir2Objc.h"
 
 /**
- * This is just a sample program showing how to interact with the library classes
+ * This is just a sample program showing how to interact with the library classes.
+ * After compiling, you can run this program using the sample GIR XML file provided
+ * by issuing the command (without quotes) "$ ./gir2objc Tut-0.1.gir".
  */
 int main(int argc, char *argv[])
 {
@@ -64,6 +66,14 @@ int main(int argc, char *argv[])
 	NSDictionary *girDict = nil;
 	NSError *parseError = nil;
 	
+	/**
+	 * The following shows the two step parsing method. 
+	 * 1) First parse the GIR XML into an NSDictionary.
+	 * 2) Then attempt to convert the NSDictionary contents into a GIRApi object.
+	 */
+	 
+	NSLog(@"Starting two-step process example.");
+	
 	NSLog(@"Parsing GIR file %@...", girFile);
 	
 	if(![gir2Objc parseGirFromFile: girFile intoDictionary: &girDict withError: &parseError])
@@ -75,16 +85,47 @@ int main(int argc, char *argv[])
 	
 	NSLog(@"Finished parsing GIR file.");
 	
-	NSLog(@"Converting parsed dictionary into Objective-C object...");
+	NSLog(@"Converting parsed dictionary into GIRApi Objective-C object...");
 	
 	GIRApi *api = [gir2Objc firstApiFromDictionary: girDict];
+	
 	if(api == nil)
 	{
-		NSLog(@"Failed to convert dictionary!");
+		NSLog(@"Failed to convert dictionary into GIRApi!");
 	}
 	else
 	{
-		NSLog(@"Finished converting dictionary.");
+		NSLog(@"Finished converting dictionary into GIRApi.");
+	}
+	
+	/**
+	 * The following shows the single step parse and convert method.
+	 * This is functionally equivalent to the two step process above.
+	 */
+	
+	NSLog(@"Starting single-step process example.");
+	
+	NSLog(@"Parsing GIR file %@ and converting it into Objective-C object...", girFile);
+	
+	api = [gir2Objc firstApiFromGirFile: girFile withError: &parseError];
+	
+	if(api == nil)
+	{
+		// Check if it failed due to a parsing error
+		if(parseError != nil)
+		{
+			NSLog(@"Failed to parse GIR file!");
+			NSLog(@"%@", parseError);
+		}
+		// If there wasn't a file parsing error then it failed turning the NSDictionary into the GIRApi
+		else
+		{
+			NSLog(@"Failed to convert dictionary into GIRApi!");
+		}
+	}
+	else
+	{
+		NSLog(@"Finished converting dictionary into GIRApi.");
 	}
 	
 	/*

@@ -53,4 +53,10 @@
  */
 -(GIRApi *)firstApiFromDictionary:(NSDictionary *) girDict;
 
+/**
+ * Parses the girFile XML and then attempts to extract a GIRApi from the parsed contents. If the GIR is successfully parsed, 
+ * but no valid data is found, nil is returned.
+ */
+-(GIRApi *)firstApiFromGirFile:(NSString *) girFile withError:(NSError **) parseError;
+
 @end
